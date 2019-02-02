@@ -1,0 +1,12 @@
+--- Utilities/cmlibuv/src/unix/fs.c	2017-07-18 10:22:56.000000000 -0500
++++ Utilities/cmlibuv/src/unix/fs.c.new	2019-02-02 17:46:56.000000000 -0600
+@@ -30,6 +30,9 @@
+ #include "internal.h"
+ 
+ #include <errno.h>
++#ifdef __MirBSD__
++# define ECANCELED 88
++#endif
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>

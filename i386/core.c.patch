@@ -1,0 +1,12 @@
+--- Utilities/cmlibuv/src/unix/core.c	2019-02-02 16:39:08.000000000 -0600
++++ Utilities/cmlibuv/src/unix/core.c.new	2019-02-02 17:36:41.000000000 -0600
+@@ -28,6 +28,9 @@
+ #include <errno.h>
+ #include <assert.h>
+ #include <unistd.h>
++#ifdef __MirBSD__
++# define _SC_GETPW_R_SIZE_MAX 101
++#endif
+ #include <sys/param.h> /* MAXHOSTNAMELEN on Linux and the BSDs */
+ #include <sys/types.h>
+ #include <sys/stat.h>
