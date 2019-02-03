@@ -249,7 +249,7 @@ int uv_cpu_info(uv_cpu_info_t** cpu_infos, int* count) {
 
   size = sizeof(info);
   which[0] = CTL_KERN;
-  which[1] = KERN_CPTIME2;
+  which[1] = KERN_CPTIME;
   for (i = 0; i < numcpus; i++) {
     which[2] = i;
     size = sizeof(info);
