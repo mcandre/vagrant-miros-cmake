@@ -1,12 +1,38 @@
 --- Utilities/cmlibuv/src/unix/fs.c	2017-07-18 10:22:56.000000000 -0500
-+++ Utilities/cmlibuv/src/unix/fs.c.new	2019-02-02 17:46:56.000000000 -0600
-@@ -30,6 +30,9 @@
- #include "internal.h"
++++ Utilities/cmlibuv/src/unix/fs.c.new	2019-02-02 18:47:19.000000000 -0600
+@@ -788,7 +788,7 @@
+   dst->st_blksize = src->st_blksize;
+   dst->st_blocks = src->st_blocks;
  
- #include <errno.h>
-+#ifdef __MirBSD__
-+# define ECANCELED 88
-+#endif
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
+-#if defined(__APPLE__)
++#if !defined(__MirBSD__) && defined(__APPLE__)
+   dst->st_atim.tv_sec = src->st_atimespec.tv_sec;
+   dst->st_atim.tv_nsec = src->st_atimespec.tv_nsec;
+   dst->st_mtim.tv_sec = src->st_mtimespec.tv_sec;
+@@ -810,6 +810,13 @@
+   dst->st_birthtim.tv_nsec = src->st_ctimensec;
+   dst->st_flags = 0;
+   dst->st_gen = 0;
++#elif defined(__MirBSD__)
++  dst->st_atime.tv_sec = src->st_atim.tv_sec;
++  dst->st_atime.tv_nsec = src->st_atim.tv_nsec;
++  dst->st_mtime.tv_sec = src->st_mtim.tv_sec;
++  dst->st_mtime.tv_nsec = src->st_mtim.tv_nsec;
++  dst->st_ctime.tv_sec = src->st_ctim.tv_sec;
++  dst->st_ctime.tv_nsec = src->st_ctim.tv_nsec;
+ #elif !defined(_AIX) && (       \
+     defined(__DragonFly__)   || \
+     defined(__FreeBSD__)     || \
+@@ -1004,10 +1011,12 @@
+   req = container_of(w, uv_fs_t, work_req);
+   uv__req_unregister(req->loop, req);
+ 
++  #if !defined(__MirBSD__)
+   if (status == -ECANCELED) {
+     assert(req->result == 0);
+     req->result = -ECANCELED;
+   }
++  #endif
+ 
+   req->cb(req);
+ }
