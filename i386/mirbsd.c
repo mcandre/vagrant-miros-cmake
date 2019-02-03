@@ -21,6 +21,7 @@
 #include "uv.h"
 #include "internal.h"
 
+#include <sys/dkstat.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/resource.h>
