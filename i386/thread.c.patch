@@ -1,11 +1,23 @@
---- Utilities/cmlibuv/src/unix/thread.c	2017-07-18 10:22:56.000000000 -0500
-+++ Utilities/cmlibuv/src/unix/thread.c	2019-02-03 15:20:04.000000000 -0600
+--- Utilities/cmlibuv/src/unix/thread.c	2019-02-03 15:39:48.000000000 -0600
++++ Utilities/cmlibuv/src/unix/thread.c.new	2019-02-03 15:39:54.000000000 -0600
 @@ -424,7 +424,7 @@
    if (err)
      return -err;
-
+ 
 -#if !(defined(__ANDROID__) && defined(HAVE_PTHREAD_COND_TIMEDWAIT_MONOTONIC))
 +#if !defined(__MirBSD__) && !(defined(__ANDROID__) && defined(HAVE_PTHREAD_COND_TIMEDWAIT_MONOTONIC))
    err = pthread_condattr_setclock(&attr, CLOCK_MONOTONIC);
    if (err)
      goto error2;
+@@ -535,7 +535,11 @@
+ 
+ 
+ int uv_barrier_init(uv_barrier_t* barrier, unsigned int count) {
++#if defined(__MirBSD__)
++  return -1;
++#else
+   return -pthread_barrier_init(barrier, NULL, count);
++#endif
+ }
+ 
+ 
