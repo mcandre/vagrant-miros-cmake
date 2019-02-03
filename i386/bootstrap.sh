@@ -8,6 +8,8 @@ sudo env PKG_PATH=https://www.mirbsd.org/MirOS/v10/Pkgs/i386 /usr/mpkg/sbin/pkg_
         patch -p0 </tmp/getaddrinfo.c.patch &&
         patch -p0 </tmp/getnameinfo.c.patch &&
         patch -p0 </tmp/stream.c.patch &&
+        patch -p0 </tmp/udp.c.patch &&
+        patch -p0 </tmp/CMakeLists.txt.patch &&
         find . -name '*.orig' -print -exec rm -rf \"{}\" \; &&
         env CC=mgcc CXX=g++ -D_POSIX_SOURCE=1 ./configure --prefix=/usr && \
         make && \

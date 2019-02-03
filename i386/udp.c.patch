@@ -1,0 +1,23 @@
+--- Utilities/cmlibuv/src/unix/udp.c	2019-02-03 13:31:32.000000000 -0600
++++ Utilities/cmlibuv/src/unix/udp.c	2019-02-03 13:31:25.000000000 -0600
+@@ -31,6 +31,12 @@
+ #include <xti.h>
+ #endif
+
++#if defined(__MirBSD__)
++# define CANCEL_ERROR -ENOCOFFEE
++#else
++# define CANCEL_ERROR -ECANCELED
++#endif
++
+ #if defined(IPV6_JOIN_GROUP) && !defined(IPV6_ADD_MEMBERSHIP)
+ # define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
+ #endif
+@@ -72,7 +78,7 @@
+     QUEUE_REMOVE(q);
+
+     req = QUEUE_DATA(q, uv_udp_send_t, queue);
+-    req->status = -ECANCELED;
++    req->status = CANCEL_ERROR;
+     QUEUE_INSERT_TAIL(&handle->write_completed_queue, &req->queue);
+   }
