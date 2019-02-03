@@ -1,53 +1,29 @@
---- Utilities/cmlibuv/src/unix/fs.c	2017-07-18 10:22:56.000000000 -0500
-+++ Utilities/cmlibuv/src/unix/fs.c.new	2019-02-03 09:43:36.000000000 -0600
-@@ -810,6 +810,17 @@
+--- Utilities/cmlibuv/src/unix/fs.c	2019-02-03 10:48:16.000000000 -0600
++++ Utilities/cmlibuv/src/unix/fs.c	2019-02-03 12:39:07.000000000 -0600
+@@ -810,6 +810,13 @@
    dst->st_birthtim.tv_nsec = src->st_ctimensec;
    dst->st_flags = 0;
    dst->st_gen = 0;
 +#elif defined(__MirBSD__)
-+  dst->st_atime.tv_sec = src->st_atim.tv_sec;
-+  dst->st_atime.tv_nsec = src->st_atim.tv_nsec;
-+  dst->st_mtime.tv_sec = src->st_mtim.tv_sec;
-+  dst->st_mtime.tv_nsec = src->st_mtim.tv_nsec;
-+  dst->st_ctime.tv_sec = src->st_ctim.tv_sec;
-+  dst->st_ctime.tv_nsec = src->st_ctim.tv_nsec;
-+  dst->st_birthtim.tv_sec = src->st_ctim.tv_sec;
-+  dst->st_birthtim.tv_nsec = src->st_ctim.tv_nsec;
-+  dst->st_flags = 0;
-+  dst->st_gen = 0;
++  dst->st_atim.tv_sec = src->st_atime;
++  dst->st_atim.tv_nsec = src->st_atimensec;
++  dst->st_mtim.tv_sec = src->st_mtime;
++  dst->st_mtim.tv_nsec = src->st_mtimensec;
++  dst->st_ctim.tv_sec = src->st_ctime;
++  dst->st_ctim.tv_nsec = src->st_ctimensec;
  #elif !defined(_AIX) && (       \
      defined(__DragonFly__)   || \
      defined(__FreeBSD__)     || \
-@@ -837,19 +848,6 @@
-   dst->st_birthtim.tv_nsec = src->st_ctim.tv_nsec;
-   dst->st_flags = 0;
-   dst->st_gen = 0;
--# endif
--#else
--  dst->st_atim.tv_sec = src->st_atime;
--  dst->st_atim.tv_nsec = 0;
--  dst->st_mtim.tv_sec = src->st_mtime;
--  dst->st_mtim.tv_nsec = 0;
--  dst->st_ctim.tv_sec = src->st_ctime;
--  dst->st_ctim.tv_nsec = 0;
--  dst->st_birthtim.tv_sec = src->st_ctime;
--  dst->st_birthtim.tv_nsec = 0;
--  dst->st_flags = 0;
--  dst->st_gen = 0;
--#endif
- }
- 
- 
-@@ -1004,10 +1002,12 @@
+@@ -1004,10 +1011,12 @@
    req = container_of(w, uv_fs_t, work_req);
    uv__req_unregister(req->loop, req);
- 
+
 +  #if !defined(__MirBSD__)
    if (status == -ECANCELED) {
      assert(req->result == 0);
      req->result = -ECANCELED;
    }
 +  #endif
- 
+
    req->cb(req);
  }

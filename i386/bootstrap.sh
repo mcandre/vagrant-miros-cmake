@@ -6,7 +6,7 @@ sudo env PKG_PATH=https://www.mirbsd.org/MirOS/v10/Pkgs/i386 /usr/mpkg/sbin/pkg_
         patch -p0 </tmp/core.c.patch &&
         patch -p0 </tmp/fs.c.patch &&
         find . -name '*.orig' -print -exec rm -rf \"{}\" \; &&
-        env CC=mgcc CXX=g++ ./configure --prefix=/usr && \
+        env CC=mgcc CXX=g++ -D_POSIX_SOURCE=1 CFLAGS=-save-temps CXXFLAGS=-save-temps ./configure --prefix=/usr && \
         make && \
         sudo make install" &&
     rm -rf cmake-3.9.0 &&
