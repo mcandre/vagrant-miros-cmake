@@ -177,7 +177,7 @@ int uv_get_process_title(char* buffer, size_t size) {
 
 
 int uv_resident_set_memory(size_t* rss) {
-  struct kinfo_proc kinfo;
+  struct kinfo_proc2 kinfo;
   size_t page_size = getpagesize();
   size_t size = sizeof(struct kinfo_proc);
   int mib[6];
