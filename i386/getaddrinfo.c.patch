@@ -1,15 +1,24 @@
 --- Utilities/cmlibuv/src/unix/getaddrinfo.c	2019-02-03 12:43:32.000000000 -0600
-+++ Utilities/cmlibuv/src/unix/getaddrinfo.c	2019-02-03 12:46:15.000000000 -0600
-@@ -124,10 +124,12 @@
++++ Utilities/cmlibuv/src/unix/getaddrinfo.c	2019-02-03 13:12:06.000000000 -0600
+@@ -36,6 +36,12 @@
+ /* EAI_* constants. */
+ #include <netdb.h>
+
++#if defined(__MirBSD__)
++# define CANCEL_ERROR -ENOCOFFEE
++#else
++# define CANCEL_ERROR -ECANCELED
++#endif
++
+
+ int uv__getaddrinfo_translate_error(int sys_err) {
+   switch (sys_err) {
+@@ -124,7 +130,7 @@
    req->service = NULL;
    req->hostname = NULL;
 
-+  #if !defined(__MirBSD__)
-   if (status == -ECANCELED) {
+-  if (status == -ECANCELED) {
++  if (status == CANCEL_ERROR) {
      assert(req->retcode == 0);
      req->retcode = UV_EAI_CANCELED;
    }
-+  #endif
-
-   if (req->cb)
-     req->cb(req, req->retcode, req->addrinfo);

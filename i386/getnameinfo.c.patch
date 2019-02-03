@@ -1,17 +1,24 @@
 --- Utilities/cmlibuv/src/unix/getnameinfo.c	2017-07-18 10:22:56.000000000 -0500
-+++ Utilities/cmlibuv/src/unix/getnameinfo.c	2019-02-03 12:55:48.000000000 -0600
-@@ -61,10 +61,13 @@
++++ Utilities/cmlibuv/src/unix/getnameinfo.c	2019-02-03 13:12:13.000000000 -0600
+@@ -27,6 +27,12 @@
+ #include <stdio.h>
+ #include <string.h>
+
++#if defined(__MirBSD__)
++# define CANCEL_ERROR -ENOCOFFEE
++#else
++# define CANCEL_ERROR -ECANCELED
++#endif
++
+
+ static void uv__getnameinfo_work(struct uv__work* w) {
+   uv_getnameinfo_t* req;
+@@ -61,7 +67,7 @@
    uv__req_unregister(req->loop, req);
    host = service = NULL;
 
-+  #if !defined(__MirBSD__)
-   if (status == -ECANCELED) {
+-  if (status == -ECANCELED) {
++  if (status == CANCEL_ERROR) {
      assert(req->retcode == 0);
      req->retcode = UV_EAI_CANCELED;
--  } else if (req->retcode == 0) {
-+  } else
-+  #endif
-+  if (req->retcode == 0) {
-     host = req->host;
-     service = req->service;
-   }
+   } else if (req->retcode == 0) {

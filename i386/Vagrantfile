@@ -11,5 +11,6 @@ Vagrant.configure("2") do |config|
     config.vm.provision "file", source: "fs.c.patch", destination: "/tmp/fs.c.patch"
     config.vm.provision "file", source: "getaddrinfo.c.patch", destination: "/tmp/getaddrinfo.c.patch"
     config.vm.provision "file", source: "getnameinfo.c.patch", destination: "/tmp/getnameinfo.c.patch"
+    config.vm.provision "file", source: "stream.c.patch", destination: "/tmp/stream.c.patch"
     config.vm.provision "shell", path: "bootstrap.sh", privileged: false
 end

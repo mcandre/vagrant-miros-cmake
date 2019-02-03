@@ -1,0 +1,50 @@
+--- Utilities/cmlibuv/src/unix/stream.c	2017-07-18 10:22:56.000000000 -0500
++++ Utilities/cmlibuv/src/unix/stream.c	2019-02-03 13:26:04.000000000 -0600
+@@ -60,6 +60,12 @@
+ };
+ #endif /* defined(__APPLE__) */
+
++#if defined(__MirBSD__)
++# define CANCEL_ERROR -ENOCOFFEE
++#else
++# define CANCEL_ERROR -ECANCELED
++#endif
++
+ static void uv__stream_connect(uv_stream_t*);
+ static void uv__write(uv_stream_t* stream);
+ static void uv__read(uv_stream_t* stream);
+@@ -445,21 +451,21 @@
+
+   if (stream->connect_req) {
+     uv__req_unregister(stream->loop, stream->connect_req);
+-    stream->connect_req->cb(stream->connect_req, -ECANCELED);
++    stream->connect_req->cb(stream->connect_req, CANCEL_ERROR);
+     stream->connect_req = NULL;
+   }
+
+-  uv__stream_flush_write_queue(stream, -ECANCELED);
++  uv__stream_flush_write_queue(stream, CANCEL_ERROR);
+   uv__write_callbacks(stream);
+
+   if (stream->shutdown_req) {
+-    /* The ECANCELED error code is a lie, the shutdown(2) syscall is a
++    /* The CANCEL_ERROR error code is a lie, the shutdown(2) syscall is a
+      * fait accompli at this point. Maybe we should revisit this in v0.11.
+      * A possible reason for leaving it unchanged is that it informs the
+      * callee that the handle has been destroyed.
+      */
+     uv__req_unregister(stream->loop, stream->shutdown_req);
+-    stream->shutdown_req->cb(stream->shutdown_req, -ECANCELED);
++    stream->shutdown_req->cb(stream->shutdown_req, CANCEL_ERROR);
+     stream->shutdown_req = NULL;
+   }
+
+@@ -1375,7 +1381,7 @@
+     return;
+
+   if (error < 0) {
+-    uv__stream_flush_write_queue(stream, -ECANCELED);
++    uv__stream_flush_write_queue(stream, CANCEL_ERROR);
+     uv__write_callbacks(stream);
+   }
+ }
