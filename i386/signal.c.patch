@@ -1,0 +1,18 @@
+--- Utilities/cmlibuv/src/unix/signal.c	2019-02-03 14:46:53.000000000 -0600
++++ Utilities/cmlibuv/src/unix/signal.c.new	2019-02-03 14:46:46.000000000 -0600
+@@ -61,6 +61,7 @@
+ static void uv__signal_global_reinit(void);
+ 
+ static void uv__signal_global_init(void) {
++  #if !defined(__MirBSD__)
+   if (!uv__signal_lock_pipefd[0])
+     /* pthread_atfork can register before and after handlers, one
+      * for each child. This only registers one for the child. That
+@@ -70,6 +71,7 @@
+      */
+     if (pthread_atfork(NULL, NULL, &uv__signal_global_reinit))
+       abort();
++  #endif
+ 
+   if (uv__make_pipe(uv__signal_lock_pipefd, 0))
+     abort();

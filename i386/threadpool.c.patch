@@ -1,0 +1,11 @@
+--- Utilities/cmlibuv/src/threadpool.c	2017-07-18 10:22:56.000000000 -0500
++++ Utilities/cmlibuv/src/threadpool.c.new	2019-02-03 14:55:31.000000000 -0600
+@@ -174,7 +174,7 @@
+ 
+ 
+ static void init_once(void) {
+-#ifndef _WIN32
++#if !defined(_WIN32) && !defined(__MirBSD__)
+   /* Re-initialize the threadpool after fork.
+    * Note that this discards the global mutex and condition as well
+    * as the work queue.
