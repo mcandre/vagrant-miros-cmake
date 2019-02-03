@@ -1,11 +1,24 @@
 --- Utilities/cmlibuv/CMakeLists.txt	2019-02-03 13:44:25.000000000 -0600
-+++ Utilities/cmlibuv/CMakeLists.txt	2019-02-03 13:47:18.000000000 -0600
-@@ -222,7 +222,7 @@
++++ Utilities/cmlibuv/CMakeLists.txt	2019-02-03 13:55:11.000000000 -0600
+@@ -222,6 +222,21 @@
      )
  endif()
 
--if(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
-+if(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD" OR CMAKE_SYSTEM_NAME STREQUAL "MirBSD")
++if(CMAKE_SYSTEM_NAME STREQUAL "MirBSD")
++  list(APPEND uv_libraries
++    kvm
++    )
++  list(APPEND uv_headers
++    include/uv-bsd.h
++    )
++  list(APPEND uv_sources
++    src/unix/bsd-ifaddrs.c
++    src/unix/mirbsd.c
++    src/unix/kqueue.c
++    src/unix/posix-hrtime.c
++    )
++endif()
++
+ if(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
    list(APPEND uv_libraries
      kvm
-     )
