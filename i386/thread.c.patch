@@ -1,17 +1,17 @@
 --- Utilities/cmlibuv/src/unix/thread.c	2019-02-03 15:39:48.000000000 -0600
-+++ Utilities/cmlibuv/src/unix/thread.c.new	2019-02-03 15:39:54.000000000 -0600
++++ Utilities/cmlibuv/src/unix/thread.c	2019-02-03 15:47:47.000000000 -0600
 @@ -424,7 +424,7 @@
    if (err)
      return -err;
- 
+
 -#if !(defined(__ANDROID__) && defined(HAVE_PTHREAD_COND_TIMEDWAIT_MONOTONIC))
 +#if !defined(__MirBSD__) && !(defined(__ANDROID__) && defined(HAVE_PTHREAD_COND_TIMEDWAIT_MONOTONIC))
    err = pthread_condattr_setclock(&attr, CLOCK_MONOTONIC);
    if (err)
      goto error2;
-@@ -535,7 +535,11 @@
- 
- 
+@@ -535,21 +535,31 @@
+
+
  int uv_barrier_init(uv_barrier_t* barrier, unsigned int count) {
 +#if defined(__MirBSD__)
 +  return -1;
@@ -19,5 +19,23 @@
    return -pthread_barrier_init(barrier, NULL, count);
 +#endif
  }
- 
- 
+
+
+ void uv_barrier_destroy(uv_barrier_t* barrier) {
++#if !defined(__MirBSD__)
+   if (pthread_barrier_destroy(barrier))
+     abort();
++#endif
+ }
+
+
+ int uv_barrier_wait(uv_barrier_t* barrier) {
++#if defined(__MirBSD__)
++  return -1;
++#else
+   int r = pthread_barrier_wait(barrier);
+   if (r && r != PTHREAD_BARRIER_SERIAL_THREAD)
+     abort();
+   return r == PTHREAD_BARRIER_SERIAL_THREAD;
++#endif
+ }
