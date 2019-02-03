@@ -1,0 +1,15 @@
+--- Utilities/cmlibuv/src/unix/getaddrinfo.c	2019-02-03 12:43:32.000000000 -0600
++++ Utilities/cmlibuv/src/unix/getaddrinfo.c	2019-02-03 12:46:15.000000000 -0600
+@@ -124,10 +124,12 @@
+   req->service = NULL;
+   req->hostname = NULL;
+
++  #if !defined(__MirBSD__)
+   if (status == -ECANCELED) {
+     assert(req->retcode == 0);
+     req->retcode = UV_EAI_CANCELED;
+   }
++  #endif
+
+   if (req->cb)
+     req->cb(req, req->retcode, req->addrinfo);
