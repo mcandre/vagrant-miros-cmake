@@ -1,9 +1,5 @@
 # vagrant-miros-cmake: a Vagrant box with MirOS (MirBSD) + cmake
 
-# WARNING
-
-(Currently broken.)
-
 # VAGRANT CLOUD
 
 * https://app.vagrantup.com/mcandre/boxes/vagrant-miros-cmake-i386
@@ -13,8 +9,8 @@
 ```console
 $ cd i386/test
 $ vagrant up
-$ vagrant ssh -c "cd /vagrant && cmake . && cmake --build . --target lint && cmake --build . --config Release && bin/hello"
-...
+$ vagrant ssh -c "cd /vagrant && CC=mgcc cmake . && cmake --build . --target lint && cmake --build . --config Release && bin/hello"
+Hello World!
 ```
 
 # RUNTIME REQUIREMENTS

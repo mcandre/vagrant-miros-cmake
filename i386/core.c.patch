@@ -1,5 +1,5 @@
---- Utilities/cmlibuv/src/unix/core.c	2019-02-02 16:39:08.000000000 -0600
-+++ Utilities/cmlibuv/src/unix/core.c	2019-02-02 17:36:41.000000000 -0600
+--- Utilities/cmlibuv/src/unix/core.c	2019-02-03 20:17:40.000000000 -0600
++++ Utilities/cmlibuv/src/unix/core.c	2019-02-03 20:18:16.000000000 -0600
 @@ -28,6 +28,9 @@
  #include <errno.h>
  #include <assert.h>
@@ -10,3 +10,14 @@
  #include <sys/param.h> /* MAXHOSTNAMELEN on Linux and the BSDs */
  #include <sys/types.h>
  #include <sys/stat.h>
+@@ -1146,7 +1149,9 @@
+   size_t shell_size;
+   long initsize;
+   int r;
+-#if defined(__ANDROID_API__) && __ANDROID_API__ < 21
++#if defined(__MirBSD__)
++  return -ENOSYS;
++#elif defined(__ANDROID_API__) && __ANDROID_API__ < 21
+   int (*getpwuid_r)(uid_t, struct passwd*, char*, size_t, struct passwd**);
+
+   getpwuid_r = dlsym(RTLD_DEFAULT, "getpwuid_r");
