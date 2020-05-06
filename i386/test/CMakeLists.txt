@@ -19,9 +19,9 @@ enable_testing()
 add_test(NAME hellotest COMMAND hello)
 
 add_custom_target(cppcheck COMMAND cppcheck -q --enable=all --suppressions-list=suppressions.cfg --error-exitcode=1 lib)
-add_custom_target(cpplint COMMAND sh recur-cpplint.sh)
-add_custom_target(splint COMMAND sh recur-splint.sh)
-add_custom_target(vera++ COMMAND sh recur-vera++.sh)
+add_custom_target(cpplint COMMAND ./recur-cpplint)
+add_custom_target(splint COMMAND ./recur-splint)
+add_custom_target(vera++ COMMAND ./recur-vera++)
 
 # Pending full C99 support
 add_custom_target(splint99)
