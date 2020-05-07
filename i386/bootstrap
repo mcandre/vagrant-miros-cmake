@@ -1,7 +1,6 @@
 #!/bin/sh
+unset IFS
 set -eu
-IFS="$(printf '%b_' '\n\t ')"
-IFS="${IFS%_}"
 
 sudo env PKG_PATH=https://www.mirbsd.org/MirOS/v10/Pkgs/i386 /usr/mpkg/sbin/pkg_add patchutils-0.2.31-1 &&
     tar xzvf /tmp/cmake-3.9.0.tar.gz &&
